@@ -125,7 +125,7 @@ class DemoCoreService
 
         $optionService->set(
             'ns_currency_iso',
-            'USD'
+            'CAD'
         );
     }
 

@@ -27,7 +27,7 @@ class CurrencyService
 
     private $decimal_separator;
 
-    private static $_currency_iso = 'USD';
+    private static $_currency_iso = 'CAD';
 
     private static $_currency_symbol = '$';
 

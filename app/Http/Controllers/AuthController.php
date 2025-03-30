@@ -38,7 +38,7 @@ class AuthController extends Controller
     public function signIn()
     {
         return view( Hook::filter( 'ns-views:pages.sign-in', 'pages.auth.sign-in' ), [
-            'title' => __( 'Sign In &mdash; NexoPOS' ),
+            'title' => __( 'Sign In &mdash; ToadEx POS' ),
         ] );
     }
 

@@ -30,7 +30,7 @@ if ( Auth::check() ) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{!! Helper::pageTitle( $title ?? __( 'Unamed Page' ) ) !!}</title>
-    <?php 
+    <?php
         $output     =   new Output;
         Hook::action( "ns-dashboard-header", $output );
         echo ( string ) $output;
@@ -109,11 +109,11 @@ if ( Auth::check() ) {
             <div id="dashboard-aside">
                 <div v-if="sidebar === 'visible'" v-cloak  class="w-64 z-50 absolute md:static flex-shrink-0 h-full flex-col overflow-hidden">
                     <div class="ns-scrollbar overflow-y-auto h-full text-sm">
-                        <div class="logo py-4 flex justify-center items-center">
+                        <div class="logo py-4 flex justify-center items-center" style="background-color:#002b5b;">
                             @if ( ns()->option->get( 'ns_store_rectangle_logo' ) )
-                            <img src="{{ ns()->option->get( 'ns_store_rectangle_logo' ) }}" class="w-11/12" alt="logo"/>
+                            <img src="{{ asset( 'svg/toadex_log.jpg' ) }}" style="width:200px;" alt="ToadEx">
                             @else
-                            <h1 class="font-black text-transparent bg-clip-text bg-gradient-to-b from-blue-200 to-indigo-400 text-3xl">NexoPOS</h1>
+                            <img src="{{ asset( 'svg/toadex_log.jpg' ) }}" style="width:200px;" alt="ToadEx">
                             @endif
                         </div>
                         <ul>
@@ -122,7 +122,7 @@ if ( Auth::check() ) {
                                     @if ( isset( $menu[ 'childrens' ] ) )
                                         @foreach( $menu[ 'childrens' ] as $identifier => $menu )
                                         <ns-submenu :active="{{ ( isset( $menu[ 'active' ] ) ? ( $menu[ 'active' ] ? 'true' : 'false' ) : 'false' ) }}" href="{{ $menu[ 'href' ] }}" id="submenu-{{ $identifier }}">{{ $menu[ 'label' ] }}</ns-submenu>
-                                        @endforeach        
+                                        @endforeach
                                     @endif
                                 </ns-menu>
                             @endforeach

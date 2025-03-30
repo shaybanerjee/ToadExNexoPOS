@@ -14,7 +14,7 @@ $authentication     =   [
 
 $json               =   [
     'ns_currency_symbol'                =>  $options->get( 'ns_currency_symbol', '$' ),
-    'ns_currency_iso'                   =>  $options->get( 'ns_currency_iso', 'USD' ),
+    'ns_currency_iso'                   =>  $options->get( 'ns_currency_iso', 'CAD' ),
     'ns_currency_position'              =>  $options->get( 'ns_currency_position', 'before' ),
     'ns_currency_thousand_separator'    =>  $options->get( 'ns_currency_thousand_separator', ',' ),
     'ns_currency_decimal_separator'     =>  $options->get( 'ns_currency_decimal_separator', '.' ),
@@ -47,7 +47,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 </script>
 @endif
 @vite([ 'resources/ts/bootstrap.ts' ])
-<?php 
+<?php
     $output     =   new Output;
     Hook::action( 'ns-dashboard-footer', $output );
     echo ( string ) $output;
