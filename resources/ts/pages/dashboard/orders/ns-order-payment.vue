@@ -123,7 +123,7 @@ export default {
             if ( parseFloat( value ) == 0 ) {
                 return nsSnackBar.error( __( 'Please provide a valid value' ) ).subscribe();
             }
-        
+
             value   =   parseFloat( value );
 
             const form  =   {

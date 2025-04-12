@@ -16,11 +16,11 @@
             <div class="p-2 border-b ns-box-body flex justify-between text-primary">
                 <div class="input-group flex-auto border-2 rounded">
                     <input
-                        ref="searchField" 
+                        ref="searchField"
                         @keydown.enter="attemptToChoose()"
                         v-model="searchCustomerValue"
-                        placeholder="Search Customer" 
-                        type="text" 
+                        placeholder="Search Customer"
+                        type="text"
                         class="outline-none w-full p-2">
                 </div>
             </div>
@@ -92,15 +92,16 @@ export default {
         }
     },
     mounted() {
-        this.orderSubscription  =   POS.order.subscribe( order => {
-            this.order      =   order;
+        this.orderSubscription = POS.order.subscribe(order => {
+            this.order = order;
         });
 
-        this.getRecentCustomers();
-
         this.$refs.searchField.focus();
-
         this.popupCloser();
+
+        this.getRecentCustomers().then(() => {
+            this.autoSelectTestCustomer();
+        });
     },
     unmounted() {
         this.orderSubscription.unsubscribe();
@@ -109,7 +110,7 @@ export default {
         __,
         popupCloser,
         nsCurrency,
-        
+
         /**
          * if the popup is likely to be used
          * on a queue, using the resolveIfQueued
@@ -131,20 +132,16 @@ export default {
         },
 
         selectCustomer( customer ) {
-            this.customers.forEach( customer => customer.selected = false );
-            customer.selected   =   true;
+            this.customers.forEach(c => c.selected = false);
+            customer.selected = true;
+            this.isLoading = true;
 
-            /**
-             * define the customer using the default
-             * POS object;
-             */
-            this.isLoading      =   true;
-
-            POS.selectCustomer( customer ).then( resolve => {
-                this.isLoading  =   false;
-                this.resolveIfQueued( customer );
-            }).catch( error => {
-                this.isLoading  =   false;
+            POS.selectCustomer(customer).then(() => {
+                this.isLoading = false;
+                this.resolveIfQueued(customer);
+                if (auto) this.popup.close(); // Go to next step
+            }).catch(() => {
+                this.isLoading = false;
             });
         },
         searchCustomer( value ) {
@@ -164,17 +161,31 @@ export default {
         getRecentCustomers() {
             this.isLoading  =   true;
 
-            nsHttpClient.get( '/api/customers/recently-active' )
-                .subscribe({
-                    next: customers => {
-                        this.isLoading  =   false;
-                        customers.forEach( customer => customer.selected = false );
-                        this.customers  =   customers;
-                    },
-                    error: ( error ) => {
-                        this.isLoading  =   false;
-                    }
-                });
+            return new Promise((resolve, reject) => {
+                nsHttpClient.get('/api/customers/recently-active')
+                    .subscribe({
+                        next: customers => {
+                            this.isLoading = false;
+                            customers.forEach(customer => customer.selected = false);
+                            this.customers = customers;
+                            resolve(customers);
+                        },
+                        error: error => {
+                            this.isLoading = false;
+                            reject(error);
+                        }
+                    });
+            });
+        },
+        autoSelectTestCustomer() {
+            const testCustomer = this.customers.find(c =>
+                c.first_name.toLowerCase() === 'test' ||
+                `${c.first_name} ${c.last_name}`.toLowerCase() === 'test'
+            );
+
+            if (testCustomer) {
+                this.selectCustomer(testCustomer, true);
+            }
         }
     }
 }

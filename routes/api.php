@@ -3,6 +3,7 @@
 use App\Events\BeforeStartApiRouteEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard\SaleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,3 +46,5 @@ if ( env( 'NS_WILDCARD_ENABLED' ) ) {
 } else {
     include dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'api-base.php';
 }
+
+Route::post('pos/sale', [SaleController::class, 'handleSale']);

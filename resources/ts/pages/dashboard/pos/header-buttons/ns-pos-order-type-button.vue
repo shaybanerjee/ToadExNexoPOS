@@ -21,11 +21,11 @@ export default {
         for( let shortcut in nsShortcuts ) {
             /**
              * let's declare only shortcuts that
-             * works on the pos grid and that doesn't 
+             * works on the pos grid and that doesn't
              * expect any popup to be visible
              */
-            if ([ 
-                    'ns_pos_keyboard_order_type', 
+            if ([
+                    'ns_pos_keyboard_order_type',
                 ].includes( shortcut ) ) {
                 nsHotPress
                     .create( 'ns_pos_keyboard_order_type' )
@@ -40,10 +40,4 @@ export default {
 }
 </script>
 <template>
-    <div class="ns-button default">
-        <button @click="openOrderTypeSelection()" class="rounded shadow flex-shrink-0 h-12 flex items-center px-2 py-1 text-sm">
-            <i class="mr-1 text-xl las la-truck"></i>
-            <span>{{ __( 'Order Type' ) }}</span>
-        </button>
-    </div>
 </template>

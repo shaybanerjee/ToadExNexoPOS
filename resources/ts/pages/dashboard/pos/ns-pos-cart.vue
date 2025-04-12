@@ -29,28 +29,6 @@
                                 </button>
                             </div>
                             <hr class="h-10" style="width: 1px">
-                            <div class="ns-button">
-                                <button @click="selectCoupon()" class="w-full h-10 px-3 outline-none flex items-center">
-                                    <i class="las la-tags"></i>
-                                    <span class="ml-1 hidden md:inline-block">{{ __( 'Coupons' ) }}</span>
-                                    <span v-if="order.coupons && order.coupons.length > 0" class="ml-1 rounded-full flex items-center justify-center h-6 w-6 bg-info-secondary text-white">{{ order.coupons.length }}</span>
-                                </button>
-                            </div>
-                            <hr class="h-10" style="width: 1px">
-                            <div class="ns-button">
-                                <button @click="defineOrderSettings()" class="w-full h-10 px-3 outline-none flex items-center">
-                                    <i class="las la-tools"></i>
-                                    <span class="ml-1 hidden md:inline-block">{{ __( 'Settings' ) }}</span>
-                                </button>
-                            </div>
-                            <hr class="h-10" style="width: 1px">
-                            <div class="ns-button" v-if="options.ns_pos_quick_product === 'yes'">
-                                <button @click="openAddQuickProduct()" class="w-full h-10 px-3 outline-none flex items-center">
-                                    <i class="las la-plus"></i>
-                                    <span class="ml-1 hidden md:inline-block">{{ __( 'Product' ) }}</span>
-                                </button>
-                            </div>
-                            <hr class="h-10" style="width: 1px">
                         </div>
                     </div>
                 </div>
@@ -60,7 +38,7 @@
                     <div class="hidden lg:flex lg:w-1/6 p-2 border border-r-0 border-t-0">{{ __( 'Total' ) }}</div>
                 </div>
                 <div id="cart-products-table" class="flex flex-auto flex-col overflow-auto">
-                    
+
                     <!-- Loop Procuts On Cart -->
 
                     <div class="text-primary flex" v-if="products.length === 0">
@@ -76,12 +54,12 @@
                                     {{ product.name }} &mdash; {{ product.unit_name }}
                                 </h3>
                                 <div class="-mx-1 flex product-options">
-                                    <div class="px-1"> 
+                                    <div class="px-1">
                                         <a @click="removeUsingIndex( index )" class="hover:text-error-secondary cursor-pointer outline-none border-dashed py-1 border-b border-error-secondary text-sm">
                                             <i class="las la-trash text-xl"></i>
                                         </a>
                                     </div>
-                                    <div class="px-1" v-if="options.ns_pos_allow_wholesale_price && allowQuantityModification( product )"> 
+                                    <div class="px-1" v-if="options.ns_pos_allow_wholesale_price && allowQuantityModification( product )">
                                         <a :class="product.mode === 'wholesale' ? 'text-success-secondary border-success-secondary' : 'border-info-primary'" @click="toggleMode( product, index )" class="cursor-pointer outline-none border-dashed py-1 border-b  text-sm">
                                             <i class="las la-award text-xl"></i>
                                         </a>
@@ -97,13 +75,13 @@
                                             class="cursor-pointer outline-none border-dashed py-1 border-b  text-sm"
                                         >{{ __( 'Price' ) }} : {{ nsCurrency( product.unit_price ) }}</a>
                                     </div>
-                                    <div class="px-1 w-1/2 md:w-auto mb-1"> 
+                                    <div class="px-1 w-1/2 md:w-auto mb-1">
                                         <a v-if="allowQuantityModification( product )" @click="openDiscountPopup( product, 'product', index )" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Discount' ) }} <span v-if="product.discount_type === 'percentage'">{{ product.discount_percentage }}%</span> : {{ nsCurrency( product.discount ) }}</a>
                                     </div>
-                                    <div class="px-1 w-1/2 md:w-auto mb-1 lg:hidden"> 
+                                    <div class="px-1 w-1/2 md:w-auto mb-1 lg:hidden">
                                         <a v-if="allowQuantityModification( product )" @click="changeQuantity( product, index )" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Quantity' ) }}: {{ product.quantity }}</a>
                                     </div>
-                                    <div class="px-1 w-1/2 md:w-auto mb-1 lg:hidden"> 
+                                    <div class="px-1 w-1/2 md:w-auto mb-1 lg:hidden">
                                         <span class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Total :' ) }} {{ nsCurrency( product.total_price ) }}</span>
                                     </div>
                                 </div>
@@ -114,7 +92,7 @@
                         </div>
                         <div class="hidden lg:flex w-1/6 p-2 border border-r-0 border-t-0 items-center justify-center">{{ nsCurrency( product.total_price ) }}</div>
                     </div>
-                    
+
                     <!-- End Loop -->
 
                 </div>
@@ -252,7 +230,7 @@
                                 <td width="200" class="border p-2"></td>
                                 <td width="200" class="border p-2">
                                     <a @click="openShippingPopup()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Shipping' ) }}</a>
-                                    <span></span>                          
+                                    <span></span>
                                 </td>
                             </tr>
                             <tr class="success">
@@ -271,7 +249,7 @@
                                 <td width="200" class="border p-2">
                                     <div class="flex justify-between w-full">
                                         <span>{{ __( 'Total' ) }}</span>
-                                        <span>{{ nsCurrency( order.total ) }}</span>    
+                                        <span>{{ nsCurrency( order.total ) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -279,7 +257,7 @@
                     </table>
                 </div>
                 <div class="h-16 flex flex-shrink-0 border-t border-box-edge" id="cart-bottom-buttons">
-                    <template v-for="button of (new Array(4)).fill()" v-if="Object.keys( cartButtons ).length === 0"> 
+                    <template v-for="button of (new Array(4)).fill()" v-if="Object.keys( cartButtons ).length === 0">
                         <div :class="takeRandomClass()" class="animate-pulse flex-shrink-0 w-1/4 flex items-center font-bold cursor-pointer justify-center  border-r  flex-auto">
                             <i class="mx-4 rounded-full bg-slate-300 h-5 w-5"></i>
                             <div class="text-lg mr-4 hidden md:flex md:flex-auto lg:text-2xl">
@@ -407,8 +385,8 @@ export default {
          * let's register hotkeys
          */
         for( let shortcut in nsShortcuts ) {
-            if ([ 
-                    'ns_pos_keyboard_shipping', 
+            if ([
+                    'ns_pos_keyboard_shipping',
                 ].includes( shortcut ) ) {
                 nsHotPress
                     .create( 'ns_pos_keyboard_shipping' )
@@ -419,8 +397,8 @@ export default {
                 });
             }
 
-            if ([ 
-                    'ns_pos_keyboard_note', 
+            if ([
+                    'ns_pos_keyboard_note',
                 ].includes( shortcut ) ) {
                 nsHotPress
                     .create( 'ns_pos_keyboard_note' )
@@ -440,7 +418,7 @@ export default {
         this.settingsSubscribe.unsubscribe();
         this.optionsSubscriber.unsubscribe();
         this.cartButtonsSubscriber.unsubscribe();
-        
+
         nsHotPress.destroy( 'ns_pos_keyboard_shipping' );
         nsHotPress.destroy( 'ns_pos_keyboard_note' );
     },
@@ -500,7 +478,7 @@ export default {
                     });
 
                     const quantities  =   {
-                        ...product.$quantities(), 
+                        ...product.$quantities(),
                         ...{
                             custom_price_edit : newPrice,
                             custom_price_with_tax: newPrice,
@@ -515,7 +493,7 @@ export default {
                      * to avoid restoring the original prices.
                      */
                     product.mode    =   'custom';
-                                        
+
                     POS.recomputeProducts( POS.products.getValue() );
                     POS.refreshCart();
 
@@ -537,7 +515,7 @@ export default {
                     Popup.show( nsPosCouponsLoadPopupVue, { resolve, reject })
                 })
             } catch( exception ) {
-                
+
             }
         },
 
@@ -588,7 +566,7 @@ export default {
                 });
 
                 const order             =   { ...this.order, ...response };
-                
+
                 POS.order.next( order );
                 POS.refreshCart();
 
@@ -620,7 +598,7 @@ export default {
 
             try {
                 const promise   =   await new Promise( ( resolve, reject ) => {
-                    Popup.show( nsPosDiscountPopupVue, { 
+                    Popup.show( nsPosDiscountPopupVue, {
                         reference,
                         resolve,
                         reject,
@@ -633,8 +611,8 @@ export default {
                             if ( response.discount_type === 'flat' && response.discount > reference.total_price ) {
                                 return nsSnackBar.error( __( 'The discount amount can\'t exceed the total price of the product.' ) ).subscribe();
                             }
-                            
-                            
+
+
                             if ( type === 'product' ) {
                                 POS.updateProduct( reference, response, index );
                             } else if ( type === 'cart' ) {
@@ -694,16 +672,16 @@ export default {
         },
 
         /**
-         * This will use the previously used 
+         * This will use the previously used
          * popup to run the promise.
          */
         changeQuantity( product, index ) {
             if ( this.allowQuantityModification( product ) ) {
                 const quantityPromise   =   new ProductQuantityPromise( product );
-                quantityPromise.run({ 
-                    unit_quantity_id    : product.unit_quantity_id, 
-                    unit_name           : product.unit_name, 
-                    $quantities         : product.$quantities 
+                quantityPromise.run({
+                    unit_quantity_id    : product.unit_quantity_id,
+                    unit_name           : product.unit_name,
+                    $quantities         : product.$quantities
                 }).then( result => {
                     POS.updateProduct( product, result, index );
                 });

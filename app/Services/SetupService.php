@@ -269,18 +269,11 @@ class SetupService
         $cashPaymentType->save();
 
         $bankPaymentType = new PaymentType;
-        $bankPaymentType->label = __( 'Bank Payment' );
+        $bankPaymentType->label = __( 'Card Payment' );
         $bankPaymentType->identifier = 'bank-payment';
         $bankPaymentType->readonly = true;
         $bankPaymentType->author = $user->id;
         $bankPaymentType->save();
-
-        $customerAccountType = new PaymentType;
-        $customerAccountType->label = __( 'Customer Account' );
-        $customerAccountType->identifier = 'account-payment';
-        $customerAccountType->readonly = true;
-        $customerAccountType->author = $user->id;
-        $customerAccountType->save();
     }
 
     public function testDBConnexion()

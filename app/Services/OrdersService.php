@@ -2461,12 +2461,6 @@ class OrdersService
                 'icon' => '/images/groceries.png',
                 'selected' => false,
             ],
-            'delivery' => [
-                'identifier' => 'delivery',
-                'label' => __( 'Delivery' ),
-                'icon' => '/images/delivery.png',
-                'selected' => false,
-            ],
         ] );
     }
 

@@ -24,6 +24,7 @@ Route::post( 'orders/{order}/refund', [ OrdersController::class, 'makeOrderRefun
     ->middleware( NsRestrictMiddleware::arguments( 'nexopos.refund.orders' ) );
 Route::post( 'orders/{order}/instalments', [ OrdersController::class, 'createInstalment' ] )->middleware( NsRestrictMiddleware::arguments( 'nexopos.create.orders-instalments' ) );
 
+
 Route::put( 'orders/{order}/instalments/{instalment}', [ OrdersController::class, 'updateInstalment' ] )->middleware( NsRestrictMiddleware::arguments( 'nexopos.update.orders-instalments' ) );
 Route::put( 'orders/{id}', [ OrdersController::class, 'updateOrder' ] )->middleware( NsRestrictMiddleware::arguments( 'nexopos.update.orders' ) );
 

@@ -14,7 +14,7 @@
         <div id="screen" class="h-24 primary ns-box-body flex items-center justify-center">
             <h1 class="font-bold text-3xl">{{ finalValue }}</h1>
         </div>
-        <ns-numpad v-if="options.ns_pos_numpad === 'default'" :floating="options.ns_pos_allow_decimal_quantities" @changed="updateQuantity( $event )" @next="defineQuantity( $event )" :value="finalValue"></ns-numpad>
+        <ns-numpad v-if="options.ns_pos_numpad === 'default'" :floating="no" @changed="updateQuantity( $event )" @next="defineQuantity( $event )" :value="finalValue"></ns-numpad>
         <ns-numpad-plus v-if="options.ns_pos_numpad === 'advanced'" @changed="updateQuantity( $event )" @next="defineQuantity( $event )" :value="finalValue"></ns-numpad-plus>
     </div>
 </template>

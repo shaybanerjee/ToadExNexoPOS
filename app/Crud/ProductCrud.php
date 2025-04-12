@@ -352,7 +352,7 @@ class ProductCrud extends CrudService
                                     'name' => 'stock_management',
                                     'label' => __( 'Stock Management Enabled' ),
                                     'validation' => 'required',
-                                    'value' => $entry->stock_management ?? 'enabled',
+                                    'value' => $entry->stock_management ?? 'disabled',
                                 ], [
                                     'type' => 'textarea',
                                     'name' => 'description',
