@@ -49,7 +49,7 @@ class SaleController extends Controller
             [$success, $terminalResponse] = $this->sendToTerminal($messageStr);
 
             if (!$success) {
-                return response()->json(['status' => 'error', 'message' => 'Sale failed'], 500);
+                return response()->json(['status' => 'error', 'message' => $terminalResponse ?: 'Sale failed'], 500);
             }
 
             return Response::make($terminalResponse, 200, ['Content-Type' => 'application/json']);
