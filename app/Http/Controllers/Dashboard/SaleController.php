@@ -33,7 +33,7 @@ class SaleController extends Controller
                     'EcrId' => '123',
                     'requestId' => (string) $requestId,
                     'data' => [
-                        'params' => [], // or ['clerkId' => '1234'] if required
+                        'params' => (object)[], // force to {} instead of []
                         'transaction' => [
                             'baseAmount' => number_format((float) $baseAmount, 2, '.', ''),
                             'tipAmount' => '0.00',
@@ -45,6 +45,8 @@ class SaleController extends Controller
             ];
 
             $messageStr = "\x02\n" . json_encode($saleMessage) . "\n\x03\n";
+
+            Log::info("Encoded terminal message: " . $messageStr);
 
             [$success, $terminalResponse] = $this->sendToTerminal($messageStr);
 
@@ -67,18 +69,53 @@ class SaleController extends Controller
         $ackMessage = "\x02\n" . json_encode(["message" => "ACK", "data" => new \stdClass()]) . "\n\x03\n";
 
         try {
+            Log::info("Attempting socket connection to terminal at {$host}:{$port}");
+
             $socket = fsockopen($host, $port, $errno, $errstr, 10);
             if (!$socket) {
+                Log::error("Socket connection failed: $errstr ($errno)");
                 return [false, "Socket connection failed: $errstr ($errno)"];
             }
 
-            fwrite($socket, $message);
+            Log::info("Socket connected successfully");
+
+            $bytesWritten = fwrite($socket, $message);
+            Log::info("Sent message to terminal", [
+                'bytes_written' => $bytesWritten,
+                'raw_message' => $message,
+                'hex_dump' => bin2hex($message),
+            ]);
+
+            // Read first response
             $response = fgets($socket);
+            Log::info("Received first response from terminal", [
+                'raw_response' => $response,
+                'hex_response' => bin2hex($response ?: ''),
+            ]);
+
+            // Read final response (e.g., success/failure)
             $finalResponse = fgets($socket);
-            fwrite($socket, $ackMessage);
-            fgets($socket); // Receive 'ready'
+            Log::info("Received final response from terminal", [
+                'raw_response' => $finalResponse,
+                'hex_response' => bin2hex($finalResponse ?: ''),
+            ]);
+
+            // Send ACK
+            $ackBytes = fwrite($socket, $ackMessage);
+            Log::info("Sent ACK message to terminal", [
+                'bytes_written' => $ackBytes,
+                'ack_message' => $ackMessage,
+                'hex_ack' => bin2hex($ackMessage),
+            ]);
+
+            // Read 'ready' confirmation
+            $ready = fgets($socket);
+            Log::info("Received 'ready' from terminal", [
+                'ready_message' => $ready,
+            ]);
 
             fclose($socket);
+            Log::info("Socket closed");
 
             if (strpos($finalResponse, 'Success') !== false) {
                 return [true, $finalResponse];
@@ -86,6 +123,10 @@ class SaleController extends Controller
 
             return [false, $finalResponse];
         } catch (\Exception $e) {
+            Log::error("Exception occurred during terminal communication", [
+                'error_message' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
             return [false, $e->getMessage()];
         }
     }
