@@ -60,6 +60,7 @@ class SaleController extends Controller
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
+
     private function sendToTerminal($message)
     {
         $host = env('TERMINAL_HOST', '127.0.0.1');
@@ -85,11 +86,18 @@ class SaleController extends Controller
                 'hex_dump' => bin2hex($message),
             ]);
 
-            // Read full response until message end marker (\x03\n)
-            $terminalResponse = $this->readTerminalMessage($socket, "\x03\n");
-            Log::info("Received full response from terminal", [
-                'raw_response' => $terminalResponse,
-                'hex_response' => bin2hex($terminalResponse ?: ''),
+            // Read first response
+            $response = fgets($socket);
+            Log::info("Received first response from terminal", [
+                'raw_response' => $response,
+                'hex_response' => bin2hex($response ?: ''),
+            ]);
+
+            // Read final response (e.g., success/failure)
+            $finalResponse = readTerminalMessage($socket, "\x03\n");
+            Log::info("Received final response from terminal", [
+                'raw_response' => $finalResponse,
+                'hex_response' => bin2hex($finalResponse ?: ''),
             ]);
 
             // Send ACK
@@ -109,11 +117,11 @@ class SaleController extends Controller
             fclose($socket);
             Log::info("Socket closed");
 
-            if (strpos($terminalResponse, 'Success') !== false) {
-                return [true, $terminalResponse];
+            if (strpos($finalResponse, 'Success') !== false) {
+                return [true, $finalResponse];
             }
 
-            return [false, $terminalResponse];
+            return [false, $finalResponse];
         } catch (\Exception $e) {
             Log::error("Exception occurred during terminal communication", [
                 'error_message' => $e->getMessage(),
@@ -123,9 +131,6 @@ class SaleController extends Controller
         }
     }
 
-    /**
-     * Read a full terminal message until the specified end marker is found.
-     */
     private function readTerminalMessage($socket, string $endMarker): string
     {
         $buffer = '';
