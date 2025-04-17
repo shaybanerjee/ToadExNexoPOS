@@ -87,14 +87,14 @@ class SaleController extends Controller
             ]);
 
             // Read first response
-            $response = readTerminalMessage($socket, "\x03\n");
+            $response = $this->readTerminalMessage($socket, "\x03\n");
             Log::info("Received first response from terminal", [
                 'raw_response' => $response,
                 'hex_response' => bin2hex($response ?: ''),
             ]);
 
             // Read final response (e.g., success/failure)
-            $finalResponse = readTerminalMessage($socket, "\x03\n");
+            $finalResponse = $this->readTerminalMessage($socket, "\x03\n");
             Log::info("Received final response from terminal", [
                 'raw_response' => $finalResponse,
                 'hex_response' => bin2hex($finalResponse ?: ''),
