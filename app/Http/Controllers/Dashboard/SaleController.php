@@ -87,7 +87,7 @@ class SaleController extends Controller
             ]);
 
             // Read first response
-            $response = fgets($socket);
+            $response = readTerminalMessage($socket, "\x03\n");
             Log::info("Received first response from terminal", [
                 'raw_response' => $response,
                 'hex_response' => bin2hex($response ?: ''),
