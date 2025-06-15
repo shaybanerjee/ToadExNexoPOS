@@ -185,47 +185,61 @@ export default {
             return payment.identifier;
         },
         async submitOrder(data = {}) {
-            const popup = Popup.show(nsPosLoadingPopupVue);
 
-            try {
-                const order = { ...POS.order.getValue(), ...data };
+            if (this.activePayment.label != "Cash") {
+                const popup = Popup.show(nsPosLoadingPopupVue);
 
-                const requestBody = {
-                    baseAmount: order.total
-                };
+                try {
+                    const order = { ...POS.order.getValue(), ...data };
 
-                console.log("MAKING PAYMENT");
+                    const requestBody = {
+                        baseAmount: order.total
+                    };
 
-                // Use nsHttpClient instead of axios
-                nsHttpClient.post('/api/pos/sale', requestBody).subscribe({
-                    next: (response) => {
-                        popup.close();
-                        console.log("RECV RESPONSE");
+                    console.log("MAKING PAYMENT");
 
-                        nsSnackBar.success(__('Order completed successfully')).subscribe();
-                        POS.printOrderReceipt(order, 'silent');
-                        this.popup.close();
-                    },
-                    error: (error) => {
-                        popup.close();
+                    // Use nsHttpClient instead of axios
+                    nsHttpClient.post('/api/pos/sale', requestBody).subscribe({
+                        next: (response) => {
+                            popup.close();
+                            console.log("RECV RESPONSE");
 
-                        let message = __('An unexpected error occurred while submitting the order.');
-                        if (error?.error?.message) {
-                            message = error.error.message;
+                            nsSnackBar.success(__('Order completed successfully')).subscribe();
+                            POS.refreshCart();
+                            POS.printOrderReceipt(order, 'silent');
+                            this.popup.close();
+                        },
+                        error: (error) => {
+                            popup.close();
+
+                            let message = __('An unexpected error occurred while submitting the order.');
+                            if (error?.error?.message) {
+                                message = error.error.message;
+                            }
+
+                            nsSnackBar.error(message).subscribe();
+                            console.error('SubmitOrder failed:', error);
+                            this.popup.close();
                         }
+                    });
 
-                        nsSnackBar.error(message).subscribe();
-                        console.error('SubmitOrder failed:', error);
-                        this.popup.close();
-                    }
+                } catch (error) {
+                    popup.close();
+
+                    const message = __('An unexpected error occurred while submitting the order.');
+                    nsSnackBar.error(message).subscribe();
+                    console.error('SubmitOrder failed (outer catch):', error);
+                }
+            } else {
+                console.log("cash payment");
+                POS.order.next({ ...POS.order.getValue(), payments: [] });
+                POS.refreshCart();
+                const result: { message: string, data: any } = await new Promise( ( resolve, reject ) => {
+                    POS.proceedSubmitting( POS.order.getValue(), resolve, reject );
                 });
-
-            } catch (error) {
-                popup.close();
-
-                const message = __('An unexpected error occurred while submitting the order.');
-                nsSnackBar.error(message).subscribe();
-                console.error('SubmitOrder failed (outer catch):', error);
+                nsSnackBar.success( result.message ).subscribe();
+                POS.refreshCart();
+                this.popup.close();
             }
         },
     }
